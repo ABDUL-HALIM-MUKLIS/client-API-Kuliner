@@ -1,6 +1,6 @@
-<p align="center" style="display: inline;"><a href="https://materializecss.com/" target="_blank"><img src="https://seeklogo.com/images/M/materialize-logo-0FCAD8A6F8-seeklogo.com.png" width="200"></a><a href="https://www.football-data.org/" target="_blank"><img src="https://www.football-data.org/assets/logo.jpg" width="200"></a></p>
+<p align="center" style="display: inline;"><a href="https://materializecss.com/" target="_blank"><img src="https://seeklogo.com/images/M/materialize-logo-0FCAD8A6F8-seeklogo.com.png" width="200"></a></p>
 
-# Api-Client-Football
-
-1. Mendaftar APi [football](http://football-data.org/)
-2. Membuat Detail dari tim sepakbola
+1. APi yang digunakan [Spesifikasi HP](https://github.com/azharimm/phone-specs-api)
+2. Membuat detail merek
+3. Membuat list hp merek
+4. Membuat detail HP
