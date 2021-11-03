@@ -1,44 +1,52 @@
-const ApiKey = "b9c2502a91124146b89478b7c2509b71";
-const baseUrl = "https://api.football-data.org/v2/";
-const leagueId = "2021";
-const baseEndPoin = `${baseUrl}competitions/${leagueId}`;
-const teamEndPoin = `${baseUrl}competitions/${leagueId}/teams`;
-const standingEndPoin = `${baseUrl}competitions/${leagueId}/standings`;
-const matchEndPoin = `${baseUrl}competitions/${leagueId}/matches`;
+const ApiKey = "resep-mie-kocok";
+// const ApiKey = "b9c2502a91124146b89478b7c2509b71";
+// const baseUrl = "https://api.football-data.org/v2/";
+// const leagueId = "2021";
+const baseUrl = 'https://api-mobilespecs.azharimm.site';
+const brandurl = `${baseUrl}/v2/brands/`;
+// const baseEndPoin = `${baseUrl}competitions/${leagueId}`;
+// const teamEndPoin = `${baseUrl}competitions/${leagueId}/teams`;
+// const standingEndPoin = `${baseUrl}competitions/${leagueId}/standings`;
+// const matchEndPoin = `${baseUrl}competitions/${leagueId}/matches`;
 
 const contents = document.querySelector("#content-list");
 const title = document.querySelector(".card-title");
-const fetchHeader = {
-    headers: {
-        'X-Auth-Token': ApiKey
-    }
-};
+// const fetchHeader = {
+//     headers: {
+//         'X-Auth-Token': null
+//     }
+// };
 
-function getListTeams() {
-    title.innerHTML = "Daftar Tim Liga Primer Inggris"
-    fetch(teamEndPoin, fetchHeader)
-        .then(response => response.json())
-        .then(resJson => {
-            console.log(resJson.teams);
-            let teams = "";
-            resJson.teams.forEach(team => {
-                teams += `
-                <li class="collection-item avatar" >
-                    <img src="${team.crestUrl}" alt="" class="circle">
-                    <span class="title">${team.name}</span>
-                    <p>Berdiri: ${team.founded} <br>
-                       Markas: ${team.venue}
-                    </p>
-                    <a href="#${team.id}" data-id="${team.id}" class="secondary-content" ><i data-id="${team.id}" class="material-icons" >info</i></a>
-                </li>
+
+
+function getListResep() {
+
+    title.innerHTML = "Daftar Brand Smartphone"
+    fetch(brandurl)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+
+            let databrand = "";
+            data.data.forEach(brand => {
+                // console.log(brand);
+                databrand += `
+                
+                <div class="col s12 m2">
+                  <div class="card blue lighten-5 center-align" style="padding:5px;">
+                    <span class="title">${brand.brand_name}</span>
+                    <a href="#${brand.brand_slug}" data-id="${brand.brand_slug}" class="secondary-content" ><i data-id="${brand.brand_slug}" class="material-icons" >info</i></a>
+                  </div>
+                </div>
+              
                 `
             });
-            contents.innerHTML = '<ul class="collection">' + teams + '</ul>';
+            contents.innerHTML = '<div class="row">' + databrand + '</div>';
             const detil = document.querySelectorAll('.secondary-content');
             detil.forEach(btn => { 
                 btn.onclick = (e) => {
-                    loadPage(e.target.dataset.id);
-                    // showTeamInfo(e.target.dataset.id);
+                    // loadPage(e.target.dataset.id);
+                    showPhoneInfo(e.target.dataset.id);
                     // console.log(e.target.dataset.id);
                 }
             })
@@ -47,108 +55,95 @@ function getListTeams() {
         })
 }
 
-function showTeamInfo(id) {
-
-    
-
-    let url = baseUrl + "teams/"+ id;
-    
-    fetch(url, fetchHeader)
+function showPhoneInfo(id) {
+    let url = brandurl + id;
+    // console.log(url)
+    fetch(url)
         .then(response => response.json())
         .then(data => {
-            title.innerHTML = "Tim " + data.name + " ("+ data.tla +")"
-            //  Kompetisi yang di ikuti
-            let kompetisi = "";
-            let x = 1;
-            data.activeCompetitions.forEach(team => {
-                kompetisi += `
-                <tr>
-                    <td style="padding-left:20px;">${x}.</td>
-                    <td>${team.name}</td>
-                    <td>${team.plan}</td>
-                </tr>
+            title.innerHTML = data.data.title
+            //  phone yang di ikuti
+            let phones = "";
+            data.data.phones.forEach(phone => {
+                phones += `
+                <div class="col s12 m4">
+                <div class="card">
+                    <div class="card-image waves-effect waves-block waves-light">
+                        <img class="activator" src="${phone.image}">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title activator grey-text text-darken-4">${phone.phone_name}</span>
+                        <p><a href="#${phone.slug}" data-id="${phone.slug}" class="detail">Lihat Spesifikasi..</a></p>
+                    </div>
+                </div>
+                </div>
                 `;
-                x++;
-
             });
             //--------------------------------
-            // pemain
-            let pemain = "";
-            let i = 1;
-            data.squad.forEach(team => {
-                pemain += `
-                <tr>
-                    <td style="padding-left:20px;">${i}.</td>
-                    <td>${team.name}</td>
-                    <td>${team.position}</td>
-                    <td>${team.dateOfBirth}</td>
-                    <td>${team.countryOfBirth}</td>
-                    <td>${team.nationality}</td>
-                    <td>${team.shirtNumber}</td>
-                    <td>${team.role}</td>
-                </tr>
-                `;
-                i++;
-
-            });
-            //------------------------------
+            
             //content utama
             contents.innerHTML = `
                 <div class="row">
-                    <div class="col s6">
-                        <img src="${data.crestUrl}" alt="${data.area.name}" width="300px"></td>
-                    </div>
-                    <div class="col s1">
-                        <p>Daerah   :</p>
-                        <p>Alamat   :</p>
-                        <p>Nomer    :</p>
-                        <p>Situs    :</p>
-                        <p>Email    :</p>
-                        <p>Lokasi   :</p>
-                    </div>
-                    <div class="col s5">
-                        <p>${data.area.name}</p>
-                        <p>${data.address}</p>
-                        <p>${data.phone}</p>
-                        <p>${data.website}</p>
-                        <p>${data.email}</p>
-                        <p>${data.venue}</p>
-                    </div>
+                    ${phones}
                 </div>
+            `;
+            //------------------------------
+            const detil = document.querySelectorAll('.detail');
+            detil.forEach(btn => { 
+                btn.onclick = (e) => {
+                    // loadPage(e.target.dataset.id);
+                    showPhoneSpec(e.target.dataset.id);
+                    // console.log(e.target.dataset.id);
+                }
+            })
 
-                <h5>KOMPETISI</h5>
-                <div class="card">
-                    <table class="striped responsive-table">
-                        <thead>
-                            <th>No</th>
-                            <th>Name</th>
-                            <th>Rencana</th>
-                        </thead>
-                        <tbody>
-                            ${kompetisi}
-                        </tbody>
-                    </table>
-                </div>
+        }).catch(err => {
+            // console.error(err);
+            console.log(err);
+        })
+        
+}
 
-                <h5>PEMAIN</h5>
-                <div class="card ">
-                    <table class="striped responsive-table">
+function showPhoneSpec(id) {
+    let urlspc = baseUrl +'/v2/'+ id;
+    // console.log(urlspc)
+    fetch(urlspc)
+        .then(response => response.json())
+        .then(data => {
+            title.innerHTML = data.data.phone_name
+
+            //  Spesifikasi network yang di ikuti
+            let spec = '';
+            data.data.specifications.forEach(spesifikasi => {
+                spec += `
+                <table>
                     <thead>
-                        <th>No</th>
-                        <th>Name</th>
-                        <th>Posisi</th>
-                        <th>Tanggal Lahir</th>
-                        <th>Asal Negara</th>
-                        <th>Kebangsaan</th>
-                        <th>Nomer punggung</th>
-                        <th>Sebagai</th>
+                        <tr>
+                        <th>${spesifikasi.title}</th>
+                        <th>Spesifikasi</th>
+                        </tr>
                     </thead>
-                    <tbody>
-                            ${pemain}
+                <tbody>`;
+                // console.log(spesifikasi.title);
+                spesifikasi.specs.forEach(spes => {
+                    // console.log(spes.key);
+                    spec += `
+                    <tr>
+                        <td>${spes.key}</td>
+                        <td>${spes.val}</td>
+                    </tr>
+                    `;
+                });
+                    spec += `
                     </tbody>
-                    </table>
+                    </table>`;
+            });
+            //--------------------------------
 
-                </div>
+
+
+            //content utama
+            contents.innerHTML = `${spec}
             `;
             //------------------------------
         }).catch(err => {
@@ -158,110 +153,13 @@ function showTeamInfo(id) {
         
 }
 
-function getListStandings() {
-    title.innerHTML = "Klasemen Sementara Liga Primer Inggris";
-    fetch(standingEndPoin, fetchHeader)
-        .then(response => response.json())
-        .then(resJson => {
-            console.log(resJson.standings[0]);
-            let teams = "";
-            let i = 1;
-            resJson.standings[0].table.forEach(team => {
-                teams += `
-                <tr>
-                    <td style="padding-left:20px;">${i}.</td>
-                    <td><img src="${team.team.crestUrl}" alt="${team.team.name}" width="30px"></td>
-                    <td>${team.team.name}</td>
-                    <td>${team.playedGames}</td>
-                    <td>${team.won}</td>
-                    <td>${team.draw}</td>
-                    <td>${team.lost}</td>
-                    <td>${team.points}</td>
-                </tr>
-                `;
-                i++;
-
-            });
-            contents.innerHTML = `
-                <div class="card">
-                    <table class="stripped responsive-table">
-                        <thead>
-                            <th></th>
-                            <th></th>
-                            <th>Nama Tim</th>
-                            <th>PG</th>
-                            <th>W</th>
-                            <th>D</th>
-                            <th>L</th>
-                            <th>P</th>
-                        </thead>
-                        <tbody>
-                            ${teams}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }).catch(err => {
-            console.error(err);
-        })
-}
-
-function getListMatches() {
-    title.innerHTML = "Jadwal Pertandingan Liga Primer Inggris";
-    fetch(matchEndPoin, fetchHeader)
-        .then(response => response.json())
-        .then(resJson => {
-            console.log(resJson.matches);
-            let matchs = "";
-            let i = 1;
-            resJson.matches.forEach(match => {
-                let d = new Date(match.utcDate).toLocaleDateString("id");
-                let scoreHomeTeam = (match.score.fullTime.homeTeam == null ? 0 : match.score.fullTime.homeTeam);
-                let scoreAwayTeam = (match.score.fullTime.awayTeam == null ? 0 : match.score.fullTime.awayTeam);
-                matchs += `
-                <tr>
-                    <td style="padding-left:20px;">${i}.</td>
-                    <td>${match.homeTeam.name} vs ${match.awayTeam.name}</td>
-                    <td>${d}</td>
-                    <td>${scoreHomeTeam}:${scoreAwayTeam}</td>
-                </tr>
-                `;
-                i++;
-
-            });
-            contents.innerHTML = `
-                <div class="card">
-                    <table class="stripped responsive-table">
-                        <thead>
-                            <th></th>
-                            <th>Peserta</th>
-                            <th>Tanggal</th>
-                            <th>Skor Akhir</th>
-                        </thead>
-                        <tbody>
-                            ${matchs}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }).catch(err => {
-            console.error(err);
-        })
-}
-
 function loadPage(page) {
     switch (page) {
-        case "teams":
-            getListTeams();
-            break;
-        case "standings":
-            getListStandings();
-            break;
-        case "matches":
-            getListMatches();
+        case "brand":
+            getListResep();
             break;
         case page:
-            showTeamInfo(page);
+            showPhoneInfo(page);
             break;
 
     }
@@ -282,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
     var page = window.location.hash.substr(1);
-    if (page === "" || page === "!") page = "teams";
+    if (page === "" || page === "!") page = "brand";
     loadPage(page);
 });
 
