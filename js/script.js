@@ -19,7 +19,7 @@ const title = document.querySelector(".card-title");
 
 
 
-function getListResep() {
+function getListBrand() {
 
     title.innerHTML = "Daftar Brand Smartphone"
     fetch(brandurl)
@@ -173,7 +173,7 @@ function showPhoneSpec(id) {
 function loadPage(page) {
     switch (page) {
         case "brand":
-            getListResep();
+            getListBrand();
             break;
         case page:
             showPhoneInfo(page);
