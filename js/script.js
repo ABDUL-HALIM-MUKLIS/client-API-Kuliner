@@ -116,7 +116,7 @@ function showPhoneSpec(id) {
             let spec = '';
             data.data.specifications.forEach(spesifikasi => {
                 spec += `
-                <table>
+                <table class="striped">
                     <thead>
                         <tr>
                         <th>${spesifikasi.title}</th>
@@ -139,11 +139,28 @@ function showPhoneSpec(id) {
                     </table>`;
             });
             //--------------------------------
+            // gambar
+            let image = '';
+            data.data.phone_images.forEach(element => {
+                image += `
+                
+                    <div class="col">
+                        <img src="${element}" style="width:250px;">
+                    </div>
+                
+                `;
+            });
+            //--------------------------------
 
 
 
             //content utama
-            contents.innerHTML = `${spec}
+            contents.innerHTML = `
+            <div class="row">
+            ${image}
+            </div>
+
+            ${spec}
             `;
             //------------------------------
         }).catch(err => {
