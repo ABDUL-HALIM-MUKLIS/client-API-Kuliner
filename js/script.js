@@ -1,53 +1,83 @@
 const ApiKey = "resep-mie-kocok";
-// const ApiKey = "b9c2502a91124146b89478b7c2509b71";
-// const baseUrl = "https://api.football-data.org/v2/";
-// const leagueId = "2021";
-const baseUrl = 'https://api-mobilespecs.azharimm.site';
-const brandurl = `${baseUrl}/v2/brands/`;
-// const baseEndPoin = `${baseUrl}competitions/${leagueId}`;
-// const teamEndPoin = `${baseUrl}competitions/${leagueId}/teams`;
-// const standingEndPoin = `${baseUrl}competitions/${leagueId}/standings`;
-// const matchEndPoin = `${baseUrl}competitions/${leagueId}/matches`;
-
+const baseUrl = 'http://localhost/ci-rest/index.php';
+const resepurl = `${baseUrl}/resep`;
 const contents = document.querySelector("#content-list");
 const title = document.querySelector(".card-title");
-// const fetchHeader = {
-//     headers: {
-//         'X-Auth-Token': null
-//     }
-// };
+const fetchHeader = {
+    headers: {
+        'API-TOKEN': '13412352135235234',
+    }
+};
 
+function getListResep(hal) {
 
-
-function getListBrand() {
-
-    title.innerHTML = "Daftar Brand Smartphone"
-    fetch(brandurl)
+    title.innerHTML = "Daftar Resep"
+    fetch(resepurl+'?page='+hal, fetchHeader)
         .then(res => res.json())
         .then(data => {
             console.log(data);
 
-            let databrand = "";
-            data.data.forEach(brand => {
-                // console.log(brand);
-                databrand += `
-                
-                <div class="col s12 m2">
-                  <div class="card blue lighten-5 center-align" style="padding:5px;">
-                    <span class="title">${brand.brand_name}</span>
-                    <a href="#${brand.brand_slug}" data-id="${brand.brand_slug}" class="secondary-content" ><i data-id="${brand.brand_slug}" class="material-icons" >info</i></a>
-                  </div>
-                </div>
-              
+            let reseps = "";
+            data.data.forEach(resep => {
+                reseps += `
+                    <div class="col s12 m3">
+                        <div class="card">
+                            <div class="card-image waves-effect waves-waves-light">
+                                <img class="activator" src="${resep.gambar}">
+                                <span class="card-title">${resep.nama_kuliner}</span>
+                            </div> 
+                            <div class="card-content">
+                                <div class="card-content">
+                                    <p>${resep.kategori} Khas ${resep.asal}</p>
+                                </div> 
+                                <div class="card-action">
+                                    <a href="#!${resep.id}" data-id="${resep.id}" class="detail"> Lihat.. </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 `
             });
-            contents.innerHTML = '<div class="row">' + databrand + '</div>';
-            const detil = document.querySelectorAll('.secondary-content');
-            detil.forEach(btn => { 
+            //pagination
+            let pages = "";
+            for (let index = 1; index < data.total_page + 1; index++) {
+                if (index == data.page) {
+                    pages += `
+                        <li class="active"><a href="#`+index+`" data-id="`+index+`" class="pgcg">`+index+`</a></li>
+                    `;
+                } else {
+                    pages += `
+                        <li class="waves-effect"><a href="#`+index+`" data-id="`+index+`" class="pgcg">`+index+`</a></li>
+                    `;
+                }
+            }
+
+            // Content resep
+            contents.innerHTML = `
+            <div class="row">` + reseps + `</div>
+            <ul class="pagination">
+                <li class="disabled"><i class="material-icons">chevron_left</i></li>
+                `+ pages +`
+                <li class="disabled"><i class="material-icons">chevron_right</i></li>
+            </ul>
+            `;
+
+            //pagination
+            const pagechange = document.querySelectorAll('.pgcg');
+            pagechange.forEach(btn => {
                 btn.onclick = (e) => {
                     // loadPage(e.target.dataset.id);
-                    showPhoneInfo(e.target.dataset.id);
+                    getListResep(e.target.dataset.id);
                     // console.log(e.target.dataset.id);
+                }
+            })
+            // detail
+            const detil = document.querySelectorAll('.detail');
+            detil.forEach(btn => {
+                btn.onclick = (e) => {
+                    // loadPage(e.target.dataset.id);
+                    // showPhoneInfo(e.target.dataset.id);
+                    console.log(e.target.dataset.id);
                 }
             })
         }).catch(err => {
@@ -55,133 +85,13 @@ function getListBrand() {
         })
 }
 
-function showPhoneInfo(id) {
-    let url = brandurl + id;
-    // console.log(url)
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            title.innerHTML = data.data.title
-            //  phone yang di ikuti
-            let phones = "";
-            data.data.phones.forEach(phone => {
-                phones += `
-                <div class="col s12 m4">
-                <div class="card">
-                    <div class="card-image waves-effect waves-block waves-light">
-                        <img class="activator" src="${phone.image}">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-title activator grey-text text-darken-4">${phone.phone_name}</span>
-                        <p><a href="#${phone.slug}" data-id="${phone.slug}" class="detail">Lihat Spesifikasi..</a></p>
-                    </div>
-                </div>
-                </div>
-                `;
-            });
-            //--------------------------------
-            
-            //content utama
-            contents.innerHTML = `
-                <div class="row">
-                    ${phones}
-                </div>
-            `;
-            //------------------------------
-            const detil = document.querySelectorAll('.detail');
-            detil.forEach(btn => { 
-                btn.onclick = (e) => {
-                    // loadPage(e.target.dataset.id);
-                    showPhoneSpec(e.target.dataset.id);
-                    // console.log(e.target.dataset.id);
-                }
-            })
-
-        }).catch(err => {
-            // console.error(err);
-            console.log(err);
-        })
-        
-}
-
-function showPhoneSpec(id) {
-    let urlspc = baseUrl +'/v2/'+ id;
-    // console.log(urlspc)
-    fetch(urlspc)
-        .then(response => response.json())
-        .then(data => {
-            title.innerHTML = data.data.phone_name
-
-            //  Spesifikasi network yang di ikuti
-            let spec = '';
-            data.data.specifications.forEach(spesifikasi => {
-                spec += `
-                <table class="striped">
-                    <thead>
-                        <tr>
-                        <th>${spesifikasi.title}</th>
-                        <th>Spesifikasi</th>
-                        </tr>
-                    </thead>
-                <tbody>`;
-                // console.log(spesifikasi.title);
-                spesifikasi.specs.forEach(spes => {
-                    // console.log(spes.key);
-                    spec += `
-                    <tr>
-                        <td>${spes.key}</td>
-                        <td>${spes.val}</td>
-                    </tr>
-                    `;
-                });
-                    spec += `
-                    </tbody>
-                    </table>`;
-            });
-            //--------------------------------
-            // gambar
-            let image = '';
-            data.data.phone_images.forEach(element => {
-                image += `
-                
-                    <div class="col">
-                        <img src="${element}" style="width:250px;">
-                    </div>
-                
-                `;
-            });
-            //--------------------------------
-
-
-
-            //content utama
-            contents.innerHTML = `
-            <div class="row">
-            ${image}
-            </div>
-
-            ${spec}
-            `;
-            //------------------------------
-        }).catch(err => {
-            // console.error(err);
-            console.log(err);
-        })
-        
-}
-
 function loadPage(page) {
     switch (page) {
         case "brand":
-            getListBrand();
-            break;
-        case page:
-            showPhoneInfo(page);
+            getListResep(1);
             break;
 
     }
-
-
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -197,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     })
     var page = window.location.hash.substr(1);
+    var pagech = parseInt(page);
     if (page === "" || page === "!") page = "brand";
+    if (typeof pagech == "number") getListResep(page);
     loadPage(page);
 });
-
