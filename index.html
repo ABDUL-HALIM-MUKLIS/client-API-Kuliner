@@ -17,6 +17,18 @@
     .input-field label {
         color: #000;
     }
+
+    #untukimg {
+        max-width: 100%;
+        height: 300px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position:50% 50%;
+    }
+
+    #colhed {
+        box-shadow:rgba(0, 0, 0, 0);
+    }
    </style>
     <title>Resep</title>
 </head>
@@ -42,19 +54,19 @@
     </ul>
     <div class="container">
         <h4 class="card-title"></h4>
-        <ul class="collapsible popout ">
+        <ul class="collapsible popout " id="collapsible">
             <li>
-                <div class="collapsible-header teal-text text-darken-3">
+                <div class="collapsible-header teal-text text-darken-3" id="colhed">
                     <span class="btn teal-effect waves-light">Tambah Resep
                         <i class="material-icons right">add</i>
                     </span>
                 </div>
-                <div class="collapsible-body"><span>
+                <div class="collapsible-body" id="colbody"><span>
                     <form name="tambah" onsubmit="return false">
                         <h4>Tambah Resep Kuliner</h4>
                         <div class="row">
                             <div class="input-field col s9">
-                                <input placeholder="Placeholder" id="nama_kuliner" name="nama_kuliner" type="text" class="validate" >
+                                <input placeholder="Placeholder" id="nama_kuliner" name="nama_kuliner" type="text" class="validate">
                                 <label for="nama_kuliner">Masukkan Nama Kuliner</label>
                             </div>
                             <div class="input-field col s9">
@@ -70,25 +82,25 @@
                                 <label>Kategori</label>
                             </div>
                             <div class="input-field col s9">
-                                <input placeholder="Placeholder" id="gambar" type="text" class="validate" >
+                                <input placeholder="http://" id="gambar" type="url" class="validate" >
                                 <label for="gambar">Masukkan link gambar</label>
                             </div>
                             <div class="input-field col s9">
-                                <input placeholder="Placeholder" id="durasi" type="number" class="validate" >
+                                <input placeholder="60" id="durasi" type="number" class="validate" >
                                 <label for="durasi">Masukkan durasi memasak dengan satuan Menit</label>
                             </div>
                             <div class="input-field col s9">
-                                <input placeholder="Placeholder" id="porsi" type="number" class="validate" >
+                                <input placeholder="5" id="porsi" type="number" class="validate" >
                                 <label for="porsi">Masukkan jumlah porsi</label>
                             </div>
                             <div class="input-field col s12">
                                 <p>Masukkan bahan yang dibutuhkan</p>
-                                <input id="bahan" type="hidden" name="content" >
+                                <input id="bahan" type="hidden" name="bahan">
                                 <trix-editor input="bahan"></trix-editor>
                             </div>
                             <div class="input-field col s12">
                                 <p>Masukkan langkah-langkah resep pembuatan</p>
-                                <input id="resep" type="hidden" name="content" >
+                                <input id="resep" type="hidden" name="resep" >
                                 <trix-editor input="resep"></trix-editor>
                             </div>
                         </div>
@@ -102,8 +114,9 @@
                 </span></div>
             </li>
         </ul>
-        <div id="content-list" class="row">
+        <div id="content-list">
         </div>
+        
     </div>
     
     

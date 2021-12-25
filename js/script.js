@@ -11,7 +11,7 @@ const fetchHeader = {
 function getListResep(hal) {
 
     title.innerHTML = `Daftar Resep`
-    fetch(resepurl+'?page='+hal, fetchHeader)
+    fetch(resepurl+'?page='+hal+`&`, fetchHeader)
         .then(res => res.json())
         .then(data => {
             console.log(data);
@@ -19,7 +19,7 @@ function getListResep(hal) {
             let reseps = "";
             data.data.forEach(resep => {
                 reseps += `
-                    <div class="col s12 m3">
+                    <div class="col s12 m4">
                         <div class="card">
                             <div class="card-image waves-effect waves-waves-light">
                                 <img class="activator" src="${resep.gambar}">
@@ -30,7 +30,8 @@ function getListResep(hal) {
                                     <p>${resep.kategori} Khas ${resep.asal}</p>
                                 </div> 
                                 <div class="card-action">
-                                    <a href="#id${resep.id}" data-id="${resep.id}" class="detail"> Lihat.. </a>
+                                    <a href="#id=${resep.id}" data-id="${resep.id}" class="detail waves-effect waves-light btn"> Lihat.. </a>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -60,7 +61,6 @@ function getListResep(hal) {
                 <li class="disabled"><i class="material-icons">chevron_right</i></li>
             </ul>
             `;
-
             //pagination
             const pagechange = document.querySelectorAll('.pgcg');
             pagechange.forEach(btn => {
@@ -76,7 +76,7 @@ function getListResep(hal) {
                 btn.onclick = (e) => {
                     // loadPage(e.target.dataset.id);
                     // showPhoneInfo(e.target.dataset.id);
-                    console.log(e.target.dataset.id);
+                    detailResep(e.target.dataset.id);
                 }
             })
         }).catch(err => {
@@ -85,7 +85,6 @@ function getListResep(hal) {
 }
 
 function addResep(){
-
     const data = {
 			'nama_kuliner' : document.querySelector('#nama_kuliner').value,
 			'asal' : document.querySelector('#asal').value,
@@ -104,37 +103,173 @@ function addResep(){
                 method : 'POST',
                 headers: {
                     'API-TOKEN': '13412352135235234',
-                    'Content-type' : 'application/json'
+                    'Content-type': 'application/json'
                 },
                 body : JSON.stringify(data)			
             }
         )
-        .then(res => res.text())
-        .then(teks => console.log(teks[msg]))
-        .catch(err => console.log(err[msg]));
+        .then(res => res.json())
+        .then(teks => alert(teks.msg))
+        .catch(err => console.log(err));
     }
+}
 
-        // console.log(data);
+function detailResep(id){
+    document.getElementById('collapsible').setAttribute('hidden','');
 
-		
+    fetch(resepurl+'?id='+id, fetchHeader)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            title.innerHTML = `<h1 class="center-align">${data.data[0].nama_kuliner}</h1>`;
+                contents.innerHTML = `
+                        <div class="teal-text text-darken-3" style="display: flex;justify-content: center;align-items: center; margin-bottom:20px;">
+                            <div style="margin-right:20px;"><i class="material-icons left">access_time</i>${data.data[0].durasi} Menis</div> 
+                            <div style="margin-right:20px;"><i class="material-icons left">room_service</i>${data.data[0].porsi} Porsi</div>
+                            <div style="margin-right:20px;"><i class="material-icons left">local_dining</i>${data.data[0].kategori}</div>
+                            <div style="margin-right:20px;"><i class="material-icons left">account_balance</i>${data.data[0].asal}</div>
+                        </div>
+                        <div class="teal-text text-darken-3" style="display: flex;justify-content: center;align-items: center; margin-bottom:20px;">
+                            <div style="margin-right:20px;">Diupload pada ${data.data[0].created_at}</div>
+                        </div>
+                        <div id="untukimg"></div>
+                        
+                        <a class="waves-effect waves-accent-3 yellow btn upresep" data-id="`+id+`" href="#update=`+id+`"><i class="material-icons left">edit</i>Ubah Resep</a>
+                        <a class="waves-effect waves-accent-3 red btn delresep"  data-id="`+id+`"><i class="material-icons left">delete</i>Hapus Resep</a>
+                        <div style="margin-top:20px;">
+                            ${data.data[0].bahan}
+                        </div>
+                        <div style="margin-top:20px;">
+                            ${data.data[0].resep}
+                        </div>
+                `;
+            document.getElementById('untukimg').style.backgroundImage = "url("+data.data[0].gambar+")";
 
+            const del = document.querySelectorAll('.delresep');
+            del.forEach(btn => {
+                btn.onclick = (e) => {
+                    if (confirm("Apakah inggin hapus data ?") == true) {
+                        // console.log(e.target.dataset.id);
+                        deleteResep(e.target.dataset.id);
+                        } else {
+                        console.log('tidak');
+                        }
+                }
+            })
+
+            const upd = document.querySelectorAll('.upresep');
+            upd.forEach(btn => {
+                btn.onclick = (e) => {
+                    updateResep(e.target.dataset.id);
+                }
+            })
+        }).catch(err => {
+            console.error(err);
+        })
+}
+
+function updateResep(idup){
+    document.getElementById('collapsible').setAttribute('hidden','');
+    fetch(resepurl+'?id='+idup, fetchHeader)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            title.innerHTML = `
+            <div class="row">
+                <div class="input-field col s12">
+                    <input value="${data.data[0].nama_kuliner}" id="first_name2" type="text" class="validate">
+                    <label class="active" for="first_name2">Nama Kuliner</label>
+                </div>
+            </div>
+                `;
+                contents.innerHTML = `
+                        <div class="teal-text text-darken-3 row" style="display: flex;justify-content: center;align-items: center; margin-bottom:20px;">
+
+                            <div class="input-field col s2">
+                                <input value="${data.data[0].durasi}" id="first_name2" type="text" class="validate">
+                                <label class="active" for="first_name2"><i class="material-icons left">access_time</i>Nama Kuliner</label>
+                            </div>
+                            <div class="input-field col s2">
+                                <input value="${data.data[0].porsi}" id="first_name2" type="text" class="validate">
+                                <label class="active" for="first_name2"><i class="material-icons left">room_service</i>Nama Kuliner</label>
+                            </div>
+                            <div class="input-field col s2">
+                                <input value="${data.data[0].kategori}" id="first_name2" type="text" class="validate">
+                                <label class="active" for="first_name2"><i class="material-icons left">local_dining</i>Nama Kuliner</label>
+                            </div>
+                            <div class="input-field col s2">
+                                <input value="${data.data[0].asal}" id="first_name2" type="text" class="validate">
+                                <label class="active" for="first_name2"><i class="material-icons left">account_balance</i>Nama Kuliner</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input value="${data.data[0].gambar}" id="first_name2" type="text" class="validate">
+                                <label class="active" for="first_name2">Nama Kuliner</label>
+                            </div>
+                        </div>
+                        <div id="untukimg"></div>
+                        
+                        <a class="waves-effect waves-darken-3 blue btn upresep" data-id="`+idup+`"><i class="material-icons left">edit</i>Update</a>
+                        
+                        <div class="input-field col s12">
+                            <p>Masukkan langkah-langkah resep pembuatan</p>
+                            <input id="bahan1" type="hidden" name="bahan1" value="${data.data[0].bahan}">
+                                <trix-editor input="bahan1"></trix-editor>
+                        </div>
+
+                        <div class="input-field col s12">
+                            <p>Masukkan langkah-langkah resep pembuatan</p>
+                            <input id="resep1" type="hidden" name="resep1" value="${data.data[0].resep}">
+                            <trix-editor input="resep1"></trix-editor>
+                        </div>
+                `;
+                document.getElementById('untukimg').style.backgroundImage = "url("+data.data[0].gambar+")";
+        }).catch(err => {
+            console.error(err);
+        })
+}
+
+function deleteResep(idhapus) {
+    fetch(resepurl,{
+                method : 'DELETE',
+                headers: {
+                    'API-TOKEN': '13412352135235234',
+                    'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body : new URLSearchParams({
+                    'id': idhapus,
+                })
+            }
+        )
+        .then(res => res.json())
+        .then(teks => alert(teks.msg))
+        .catch(err => console.log(err));
 }
 
 function loadPage(page) {
     switch (page) {
         case "reseps":
             getListResep(1);
+            // console.log('masuk')
             break;
-
     }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     var page = window.location.hash.substr(1);
+    var det = window.location.hash.substr(1,3);
+    var detid = window.location.hash.substr(4);
+    var upd = window.location.hash.substr(1,7);
+    var updid = window.location.hash.substr(8);
     var pagech = parseInt(page);
-    if (page === "" || page === "!") page = "reseps";
-    if (typeof pagech == "number") getListResep(page);
-    loadPage(page);
+    if (upd === "update=") updateResep(updid) ,console.log('5');
+    if (det === "id=") detailResep(detid) ,console.log('4');
+    if (page === "" || page === "!") loadPage("reseps"),console.log('3') ;
+    if (typeof pagech !== null && det !== 'id=' && upd !== 'update=') {
+        getListResep('');
+        console.log('2');
+    }
 
     var elems = document.querySelectorAll('.sidenav');
     var instances = M.Sidenav.init(elems);
@@ -148,12 +283,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var clb = document.querySelectorAll('.collapsible');
     var instances = M.Collapsible.init(clb);
 
+    var prlx = document.querySelectorAll('.parallax');
+    var instances = M.Parallax.init(prlx);
+
+
     document.querySelectorAll(".sidenav a, .topnav a").forEach(elm => {
         elm.addEventListener("click", evt => {
             let sideNav = document.querySelector(".sidenav");
             M.Sidenav.getInstance(sideNav).close();
             page = evt.target.getAttribute("href").substr(1);
             loadPage(page);
+            console.log('1');
         })
     });
     // buton post
