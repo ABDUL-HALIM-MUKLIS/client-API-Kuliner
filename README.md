@@ -3,7 +3,7 @@
 # Client API Resep
 1. APi Server yang digunakan adalah refullAPI yang sebelumnya saya buat [Resep](https://github.com/ABDUL-HALIM-MUKLIS/CI-Resfull-API-Resep)
 1. Membuat daftar Resep mengunakan metod GET
-- resepurl = url menghases resep
+- resepurl = url mengakses resep
 - hal = merupakan halaman
 - fetchHeader = berisi headet terdapat Token
 ```
@@ -19,7 +19,6 @@
 - data = berisi pengambilan value pada inputan
 - if = mengecek jika ada inputan kosong
 - Pada fetch membawa data yang sudah di baca dan di kirim melalui body dengan mengunakan metod POST
-- Dikirim dengan metod POST
 ```
      const data = {
 			... bagian ini bisa di lihat pada projek
@@ -42,18 +41,7 @@
         .catch(err => console.log(err));
     }
 ```
-2. Membuat Detail Resep dengan metod GET dengan berdasarkan ID
-- pemangilan seperti point 1 tetapi berdasarkan ID
-```
-    fetch(resepurl+'?id='+id, fetchHeader)
-        .then(res => res.json())
-        .then(data => {
-            ... bagian ini bisa di lihat pada projek
-        }).catch(err => {
-            console.error(err);
-        })
-```
-3. Membuat tampilan update dan meng update dengan metod PUT berdasarkan ID
+2. Membuat tampilan update dan meng update dengan metod PUT berdasarkan ID
 - Pada if else mengecek gambar dengan url lama atau baru
 - Di kirim dengan Metod PUT
 ```
@@ -95,7 +83,7 @@
         .catch(err => console.log(err));
     }
 ```
-4. Pada tampilan update terdapat tombol Hapus Resep dengan metod DELETE dengan berdasarkan ID
+3. Pada tampilan update terdapat tombol Hapus Resep dengan metod DELETE dengan berdasarkan ID
 - Menghapus dengan metod DELETE berdasarkan ID 
 ```
     fetch(resepurl,{
@@ -116,7 +104,19 @@
             })
         .catch(err => console.log(err));
 ```
+4. Membuat Detail Resep dengan metod GET dengan berdasarkan ID
+- pemangilan seperti point 1 tetapi berdasarkan ID
+```
+    fetch(resepurl+'?id='+id, fetchHeader)
+        .then(res => res.json())
+        .then(data => {
+            ... bagian ini bisa di lihat pada projek
+        }).catch(err => {
+            console.error(err);
+        })
+```
 5. Membuat search berdasarkan asal kota masakan mengunakan metod GET
+- pemangilan seperti point 1 tetapi berdasarkan asal
 - search = adalah hasil inputan pada tag input
 ```
     fetch(resepurl+'?asal='+search, fetchHeader)
