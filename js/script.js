@@ -12,7 +12,23 @@ function getListResep(hal) {
 
     document.getElementById('collapsible').style.display = "block";
     document.getElementById('pemanis').style.display = "block";
-    title.innerHTML = `Daftar Resep`
+    title.innerHTML = `
+                        <div class="row">
+                            <form class="col s12">
+                            <div class="row">
+                                <div class="col s6">
+                                    <h4>Daftar Resep</h4>
+                                </div>
+                                <div class="input-field col s6">
+                                    <form onsubmit="return false">
+                                        <i class="material-icons prefix">search</i>
+                                        <input id="search" type="text" class="validate search">
+                                        <label for="search">Cari Kota</label>
+                                    </form>
+                                </div>
+                            </div>
+                            </form>
+                        </div>`
     fetch(resepurl+'?page='+hal, fetchHeader)
         .then(res => res.json())
         .then(data => {
@@ -67,18 +83,90 @@ function getListResep(hal) {
             const pagechange = document.querySelectorAll('.pgcg');
             pagechange.forEach(btn => {
                 btn.onclick = (e) => {
-                    // loadPage(e.target.dataset.id);
                     getListResep(e.target.dataset.id);
-                    // console.log(e.target.dataset.id);
                 }
             })
             // detail
             const detil = document.querySelectorAll('.detail');
             detil.forEach(btn => {
                 btn.onclick = (e) => {
-                    // loadPage(e.target.dataset.id);
-                    // showPhoneInfo(e.target.dataset.id);
                     detailResep(e.target.dataset.id, hal);
+                }
+            })
+            //seatch
+            const asd = document.querySelectorAll('.search');
+            asd.forEach(btn => {
+                btn.onchange = (e) => {
+                    getasalResep(document.querySelector('#search').value,hal);
+                }
+            })
+        }).catch(err => {
+            console.error(err);
+        })
+}
+
+function getasalResep(search,hal) {
+    document.getElementById('collapsible').style.display = "block";
+    document.getElementById('pemanis').style.display = "block";
+    title.innerHTML = `
+                        <div class="row">
+                            <form class="col s12">
+                            <div class="row">
+                                <div class="col s6">
+                                    <h4>Daftar Resep</h4>
+                                </div>
+                                <div class="input-field col s6">
+                                <i class="material-icons prefix">search</i>
+                                <input id="search" type="text" class="validate">
+                                <label for="search">Cari Kota</label>
+                                </div>
+                            </div>
+                            </form>
+                        </div>`
+    fetch(resepurl+'?asal='+search, fetchHeader)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+
+            let reseps = "";
+            data.data.forEach(resep => {
+                reseps += `
+                    <div class="col s12 m4">
+                        <div class="card">
+                            <div class="card-image waves-effect waves-waves-light">
+                                <img class="activator" src="${resep.gambar}" alt="coba">
+                                <span class="card-title">${resep.nama_kuliner}</span>
+                            </div> 
+                            <div class="card-content">
+                                <div class="card-content">
+                                    <p>${resep.kategori} Khas ${resep.asal}</p>
+                                </div> 
+                                <div class="card-action">
+                                    <a href="#id=${resep.id}" data-id="${resep.id}" class="detail waves-effect waves-light btn"> Lihat.. </a>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            });
+
+            // Content resep
+            contents.innerHTML = `
+            <div class="row">` + reseps + `</div>
+            `;
+            // detail
+            const detil = document.querySelectorAll('.detail');
+            detil.forEach(btn => {
+                btn.onclick = (e) => {
+                    detailResep(e.target.dataset.id, hal);
+                }
+            })
+            //seatch
+            const asd = document.querySelectorAll('.search');
+            asd.forEach(btn => {
+                btn.onchange = (e) => {
+                    getasalResep(document.querySelector('#search').value);
                 }
             })
         }).catch(err => {
@@ -160,7 +248,7 @@ function detailResep(id,hal){
                 btn.onclick = (e) => {
                     if (confirm("Apakah inggin hapus data ?") == true) {
                         // console.log(e.target.dataset.id);
-                        deleteResep(e.target.dataset.id);
+                        deleteResep(e.target.dataset.id,hal);
                         } else {
                         console.log('tidak');
                         }
@@ -321,7 +409,7 @@ function putResep(putid,hal){
     detailResep(putid,hal);
 }
 
-function deleteResep(idhapus) {
+function deleteResep(idhapus,hal) {
     fetch(resepurl,{
                 method : 'DELETE',
                 headers: {
@@ -336,7 +424,7 @@ function deleteResep(idhapus) {
         .then(res => res.json())
         .then(teks => {
                 alert(teks.msg);
-                getListResep(1);
+                getListResep(hal);
             })
         .catch(err => console.log(err));
 }

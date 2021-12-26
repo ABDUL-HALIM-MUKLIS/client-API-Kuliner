@@ -116,5 +116,16 @@
             })
         .catch(err => console.log(err));
 ```
+5. Membuat search berdasarkan asal kota masakan mengunakan metod GET
+- search = adalah hasil inputan pada tag input
+```
+    fetch(resepurl+'?asal='+search, fetchHeader)
+        .then(res => res.json())
+        .then(data => {
+            ... bagian ini bisa di lihat pada projek
+        }).catch(err => {
+            console.error(err);
+        })
+```
 
 ### Lebih detail bisa lihat pada Project
