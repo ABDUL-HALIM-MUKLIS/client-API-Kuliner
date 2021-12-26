@@ -30,6 +30,8 @@
         box-shadow:rgba(0, 0, 0, 0);
     }
    </style>
+
+   <script src="js/componen.js"></script>
     <title>Resep</title>
 </head>
 
@@ -40,28 +42,37 @@
                 <a href="#" class="brand-logo">Resep</a>
                 <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                 <ul id="nav-mobile" class="topnav right hide-on-med-and-down">
+                    <li class="input-field">
+                        <a class="btnsearch"><i class="material-icons">search</i></a>
+                    </li>
                     <li><a href="#reseps">Daftar Resep</a></li>
                 </ul>
             </div>
         </nav>
     </div>
     
-    
-            
-    
     <ul id="slide-out" class="sidenav">
         <li><a href="#reseps">Daftar Resep</a></li>
     </ul>
     <div class="container">
-        <h4 class="card-title"></h4>
-        <ul class="collapsible popout " id="collapsible">
-            <li>
+        <div class="row" id="pemanis">
+            <div class="col s6 valign-wrapper" style="height:250px;" >
+                <h4>Memasak Lebih gampang disi aja ...</h4>
+            </div>
+            <div class="col s6">
+                <img src="img/undraw_cooking_lyxy.svg" height="250px" style="margin-top: 10px;">
+            </div>
+        </div>
+        <h5 class="card-title"></h5>
+        <ul class="collapsible popout" id="collapsible">
+            <li id="colats">
                 <div class="collapsible-header teal-text text-darken-3" id="colhed">
-                    <span class="btn teal-effect waves-light">Tambah Resep
+                    <span class="btn-small teal-effect waves-light">Tambah Resep
                         <i class="material-icons right">add</i>
                     </span>
                 </div>
-                <div class="collapsible-body" id="colbody"><span>
+  
+                <div class="collapsible-body" id="colbody">
                     <form name="tambah" onsubmit="return false">
                         <h4>Tambah Resep Kuliner</h4>
                         <div class="row">

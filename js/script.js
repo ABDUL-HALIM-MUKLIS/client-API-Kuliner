@@ -10,8 +10,10 @@ const fetchHeader = {
 
 function getListResep(hal) {
 
+    document.getElementById('collapsible').style.display = "block";
+    document.getElementById('pemanis').style.display = "block";
     title.innerHTML = `Daftar Resep`
-    fetch(resepurl+'?page='+hal+`&`, fetchHeader)
+    fetch(resepurl+'?page='+hal, fetchHeader)
         .then(res => res.json())
         .then(data => {
             console.log(data);
@@ -22,7 +24,7 @@ function getListResep(hal) {
                     <div class="col s12 m4">
                         <div class="card">
                             <div class="card-image waves-effect waves-waves-light">
-                                <img class="activator" src="${resep.gambar}">
+                                <img class="activator" src="${resep.gambar}" alt="coba">
                                 <span class="card-title">${resep.nama_kuliner}</span>
                             </div> 
                             <div class="card-content">
@@ -43,11 +45,11 @@ function getListResep(hal) {
             for (let index = 1; index < data.total_page + 1; index++) {
                 if (index == data.page) {
                     pages += `
-                        <li class="active"><a href="#`+index+`" data-id="`+index+`" class="pgcg">`+index+`</a></li>
+                        <li class="active"><a href="#page=`+index+`" data-id="`+index+`" class="pgcg">`+index+`</a></li>
                     `;
                 } else {
                     pages += `
-                        <li class="waves-effect"><a href="#`+index+`" data-id="`+index+`" class="pgcg">`+index+`</a></li>
+                        <li class="waves-effect"><a href="#page=`+index+`" data-id="`+index+`" class="pgcg">`+index+`</a></li>
                     `;
                 }
             }
@@ -76,7 +78,7 @@ function getListResep(hal) {
                 btn.onclick = (e) => {
                     // loadPage(e.target.dataset.id);
                     // showPhoneInfo(e.target.dataset.id);
-                    detailResep(e.target.dataset.id);
+                    detailResep(e.target.dataset.id, hal);
                 }
             })
         }).catch(err => {
@@ -84,7 +86,7 @@ function getListResep(hal) {
         })
 }
 
-function addResep(){
+function postResep(){
     const data = {
 			'nama_kuliner' : document.querySelector('#nama_kuliner').value,
 			'asal' : document.querySelector('#asal').value,
@@ -109,14 +111,21 @@ function addResep(){
             }
         )
         .then(res => res.json())
-        .then(teks => alert(teks.msg))
+        .then(teks => {
+            alert(teks.msg);
+            document.getElementById('colbody').style.display = "none";
+            document.getElementById('colats').classList.remove('active');
+            
+        })
         .catch(err => console.log(err));
     }
+    
 }
 
-function detailResep(id){
-    document.getElementById('collapsible').setAttribute('hidden','');
-
+function detailResep(id,hal){
+    window.localStorage.setItem('hal', JSON.stringify(hal));
+    document.getElementById('collapsible').style.display = "none";
+    document.getElementById('pemanis').style.display = "none";
     fetch(resepurl+'?id='+id, fetchHeader)
         .then(res => res.json())
         .then(data => {
@@ -136,6 +145,7 @@ function detailResep(id){
                         
                         <a class="waves-effect waves-accent-3 yellow btn upresep" data-id="`+id+`" href="#update=`+id+`"><i class="material-icons left">edit</i>Ubah Resep</a>
                         <a class="waves-effect waves-accent-3 red btn delresep"  data-id="`+id+`"><i class="material-icons left">delete</i>Hapus Resep</a>
+                        <a class="waves-effect waves-darken-3 green btn kembali" href="#page=`+hal+`" data-id="`+hal+`"><i class="material-icons left">arrow_back</i>Kembali</a>
                         <div style="margin-top:20px;">
                             ${data.data[0].bahan}
                         </div>
@@ -160,16 +170,25 @@ function detailResep(id){
             const upd = document.querySelectorAll('.upresep');
             upd.forEach(btn => {
                 btn.onclick = (e) => {
-                    updateResep(e.target.dataset.id);
+                    updateResep(e.target.dataset.id,hal);
                 }
             })
+
+            const kem = document.querySelectorAll('.kembali');
+                kem.forEach(btn => {
+                    btn.onclick = (e) => {
+                        getListResep(e.target.dataset.id);
+                    }
+                })
         }).catch(err => {
             console.error(err);
         })
 }
 
-function updateResep(idup){
-    document.getElementById('collapsible').setAttribute('hidden','');
+function updateResep(idup,hal){
+    window.localStorage.setItem('hal', JSON.stringify(hal));
+    document.getElementById('collapsible').style.display = "none";
+    document.getElementById('pemanis').style.display = "none";
     fetch(resepurl+'?id='+idup, fetchHeader)
         .then(res => res.json())
         .then(data => {
@@ -177,8 +196,8 @@ function updateResep(idup){
             title.innerHTML = `
             <div class="row">
                 <div class="input-field col s12">
-                    <input value="${data.data[0].nama_kuliner}" id="first_name2" type="text" class="validate">
-                    <label class="active" for="first_name2">Nama Kuliner</label>
+                    <input value="${data.data[0].nama_kuliner}" id="nama_kuliner1" type="text" class="validate">
+                    <label class="active" for="nama_kuliner1">Nama Kuliner</label>
                 </div>
             </div>
                 `;
@@ -186,31 +205,37 @@ function updateResep(idup){
                         <div class="teal-text text-darken-3 row" style="display: flex;justify-content: center;align-items: center; margin-bottom:20px;">
 
                             <div class="input-field col s2">
-                                <input value="${data.data[0].durasi}" id="first_name2" type="text" class="validate">
-                                <label class="active" for="first_name2"><i class="material-icons left">access_time</i>Nama Kuliner</label>
+                                <input value="${data.data[0].durasi}" id="durasi1" type="number" class="validate">
+                                <label class="active" for="durasi1"><i class="material-icons left">access_time</i>durasi memasak</label>
                             </div>
                             <div class="input-field col s2">
-                                <input value="${data.data[0].porsi}" id="first_name2" type="text" class="validate">
-                                <label class="active" for="first_name2"><i class="material-icons left">room_service</i>Nama Kuliner</label>
+                                <input value="${data.data[0].porsi}" id="porsi1" type="number" class="validate">
+                                <label class="active" for="porsi1"><i class="material-icons left">room_service</i>jumlah porsi</label>
                             </div>
                             <div class="input-field col s2">
-                                <input value="${data.data[0].kategori}" id="first_name2" type="text" class="validate">
-                                <label class="active" for="first_name2"><i class="material-icons left">local_dining</i>Nama Kuliner</label>
+                                <select id="kategori1">
+                                    <option value="${data.data[0].kategori}" selected disabled>${data.data[0].kategori}</option>
+                                    <option value="Makanan">Makanan</option>
+                                    <option value="Minuman">Minuman</option>
+                                </select>
+                                <label class="active" for="kategori1"><i class="material-icons left">local_dining</i>Kategori</label>
                             </div>
                             <div class="input-field col s2">
-                                <input value="${data.data[0].asal}" id="first_name2" type="text" class="validate">
-                                <label class="active" for="first_name2"><i class="material-icons left">account_balance</i>Nama Kuliner</label>
+                                <input value="${data.data[0].asal}" id="asal1" type="text" class="validate">
+                                <label class="active" for="asal1"><i class="material-icons left">account_balance</i>Asal Kuliner</label>
                             </div>
                         </div>
                         <div class="row">
                             <div class="input-field col s12">
-                                <input value="${data.data[0].gambar}" id="first_name2" type="text" class="validate">
-                                <label class="active" for="first_name2">Nama Kuliner</label>
+                                <input value="${data.data[0].gambar}" id="gambarold" type="url" class="validate" hidden>
+                                <input value="${data.data[0].gambar}" id="gambar1" type="url" class="validate">
+                                <label class="active" for="gambar1">link gambar</label>
                             </div>
                         </div>
                         <div id="untukimg"></div>
                         
-                        <a class="waves-effect waves-darken-3 blue btn upresep" data-id="`+idup+`"><i class="material-icons left">edit</i>Update</a>
+                        <a class="waves-effect waves-darken-3 blue btn putresep" data-id="`+idup+`"><i class="material-icons left">edit</i>Update</a>
+                        <a class="waves-effect waves-darken-3 green btn kembali" href="#id=`+idup+`" data-id="`+idup+`"><i class="material-icons left">arrow_back</i>Kembali</a>
                         
                         <div class="input-field col s12">
                             <p>Masukkan langkah-langkah resep pembuatan</p>
@@ -225,9 +250,75 @@ function updateResep(idup){
                         </div>
                 `;
                 document.getElementById('untukimg').style.backgroundImage = "url("+data.data[0].gambar+")";
+                document.getElementById('kategori1').style.display = "inline";
+
+                const pud = document.querySelectorAll('.putresep');
+                pud.forEach(btn => {
+                    btn.onclick = (e) => {
+                        putResep(e.target.dataset.id,hal);
+                    }
+                })
+                const kem = document.querySelectorAll('.kembali');
+                kem.forEach(btn => {
+                    btn.onclick = (e) => {
+                        detailResep(e.target.dataset.id,hal);
+                    }
+                })
         }).catch(err => {
             console.error(err);
         })
+}
+
+function putResep(putid,hal){
+    const gambar = document.querySelector('#gambarold').value;
+    var data = {
+			'nama_kuliner' : document.querySelector('#nama_kuliner1').value,
+			'asal' : document.querySelector('#asal1').value,
+			'kategori' : document.querySelector('#kategori1').value,
+			'gambar' : document.querySelector('#gambar1').value,
+			'durasi' : document.querySelector('#durasi1').value,
+			'porsi' : document.querySelector('#porsi1').value,
+			'bahan' : document.querySelector('#bahan1').value,
+			'resep' : document.querySelector('#resep1').value,
+            'id' : putid
+		};
+    if (data.nama_kuliner == "" ||  data.asal == "" || data.kategori == "" || data.gambar == "" || data.durasi == "" || data.porsi == "" || data.bahan == "" || data.resep == "") {
+        alert("Data tidak boleh kososong");
+        return false;
+    }else if (data.gambar == gambar){
+        console.log('gambar sama');
+        fetch(resepurl,{
+                method : 'PUT',
+                headers: {
+                    'API-TOKEN': '13412352135235234',
+                    'Content-type': 'application/json'
+                },
+                body : JSON.stringify(data)			
+            }
+        )
+        .then(res => res.json())
+        .then(teks => alert(teks.msg))
+        .catch(err => console.log(err));
+    }else {
+        console.log('gambar berbeda');
+        databaru = {
+            'gambar' : gambar
+        }
+        Object.assign(databaru, data);
+        fetch(resepurl,{
+                method : 'PUT',
+                headers: {
+                    'API-TOKEN': '13412352135235234',
+                    'Content-type': 'application/json'
+                },
+                body : JSON.stringify(databaru)			
+            }
+        )
+        .then(res => res.json())
+        .then(teks => alert(teks.msg))
+        .catch(err => console.log(err));
+    }
+    detailResep(putid,hal);
 }
 
 function deleteResep(idhapus) {
@@ -243,9 +334,13 @@ function deleteResep(idhapus) {
             }
         )
         .then(res => res.json())
-        .then(teks => alert(teks.msg))
+        .then(teks => {
+                alert(teks.msg);
+                getListResep(1);
+            })
         .catch(err => console.log(err));
 }
+
 
 function loadPage(page) {
     switch (page) {
@@ -257,49 +352,29 @@ function loadPage(page) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    // melihat url
     var page = window.location.hash.substr(1);
+    var pagehal = window.location.hash.substr(6);
+    var pagno = window.location.hash.substr(1,5);
     var det = window.location.hash.substr(1,3);
     var detid = window.location.hash.substr(4);
     var upd = window.location.hash.substr(1,7);
     var updid = window.location.hash.substr(8);
-    var pagech = parseInt(page);
-    if (upd === "update=") updateResep(updid) ,console.log('5');
-    if (det === "id=") detailResep(detid) ,console.log('4');
-    if (page === "" || page === "!") loadPage("reseps"),console.log('3') ;
-    if (typeof pagech !== null && det !== 'id=' && upd !== 'update=') {
-        getListResep('');
-        console.log('2');
-    }
 
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems);
+    // menyimpan halaman awal
+    var halaman = JSON.parse(window.localStorage.getItem('hal'));
 
-    var modal = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(modal);
-
-    var slt = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(slt);
-
-    var clb = document.querySelectorAll('.collapsible');
-    var instances = M.Collapsible.init(clb);
-
-    var prlx = document.querySelectorAll('.parallax');
-    var instances = M.Parallax.init(prlx);
-
-
-    document.querySelectorAll(".sidenav a, .topnav a").forEach(elm => {
-        elm.addEventListener("click", evt => {
-            let sideNav = document.querySelector(".sidenav");
-            M.Sidenav.getInstance(sideNav).close();
-            page = evt.target.getAttribute("href").substr(1);
-            loadPage(page);
-            console.log('1');
-        })
-    });
+    // cek url ketika di refresh
+    if (pagno === "page=") getListResep(pagehal) ,console.log('6');
+    if (upd === "update=") updateResep(updid,halaman) ,console.log('5');
+    if (det === "id=") detailResep(detid,halaman) ,console.log('4');
+    if (page === "" || page === "!" || page === "reseps") loadPage("reseps"),console.log('3') ;
+    
     // buton post
     document.querySelector('#kirim').addEventListener('click',function(e)
-	{
-		addResep();		
-	});
+    {
+        postResep();
+        
+    });
 
 });
