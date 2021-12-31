@@ -97,7 +97,7 @@ function getListResep(hal) {
             const asd = document.querySelectorAll('.search');
             asd.forEach(btn => {
                 btn.onchange = (e) => {
-                    getasalResep(document.querySelector('#search').value,hal);
+                    getasalResep(document.getElementById('search').value,hal);
                 }
             })
         }).catch(err => {
@@ -110,14 +110,14 @@ function getasalResep(search,hal) {
     document.getElementById('pemanis').style.display = "block";
     title.innerHTML = `
                         <div class="row">
-                            <form class="col s12">
+                            <form class="col s12" onsubmit="return false">
                             <div class="row">
                                 <div class="col s6">
                                     <h4>Daftar Resep</h4>
                                 </div>
                                 <div class="input-field col s6">
                                 <i class="material-icons prefix">search</i>
-                                <input id="search" type="text" class="validate">
+                                <input id="search" type="text" class="validate search" autofocus>
                                 <label for="search">Cari Kota</label>
                                 </div>
                             </div>
@@ -164,9 +164,10 @@ function getasalResep(search,hal) {
             })
             //seatch
             const asd = document.querySelectorAll('.search');
+            document.getElementById('search').value = search;
             asd.forEach(btn => {
                 btn.onchange = (e) => {
-                    getasalResep(document.querySelector('#search').value);
+                    getasalResep(document.getElementById('search').value,hal);
                 }
             })
         }).catch(err => {
@@ -457,7 +458,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (upd === "update=") updateResep(updid,halaman) ,console.log('5');
     if (det === "id=") detailResep(detid,halaman) ,console.log('4');
     if (page === "" || page === "!" || page === "reseps") loadPage("reseps"),console.log('3') ;
-    
     // buton post
     document.querySelector('#kirim').addEventListener('click',function(e)
     {
