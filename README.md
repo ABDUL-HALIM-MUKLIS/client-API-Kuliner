@@ -16,7 +16,7 @@
         })
 ```
 - Hasil Tampilan :
-    <p align="center" style="display: inline;"><a href="/imgdemo/getall.jpeg" target="_blank"><img src="/imgdemo/getall.jpeg" width="800"></a></p>
+    <p align="center" style="display: inline;"><a href="/imgdemo/getall.jpeg" target="_blank"><img src="/imgdemo/getall.jpeg" width="600"></a></p>
 
 2. Membuat tampilan menambah Resep dan di kirim dengan metod POST
 - data = berisi pengambilan value pada inputan
