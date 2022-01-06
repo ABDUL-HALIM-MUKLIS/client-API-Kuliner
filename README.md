@@ -2,7 +2,8 @@
 
 # Client API Resep
 1. APi Server yang digunakan adalah refullAPI yang sebelumnya saya buat [Resep](https://github.com/ABDUL-HALIM-MUKLIS/CI-Resfull-API-Resep)
-1. Membuat daftar Resep mengunakan metod GET
+
+2. Membuat daftar Resep mengunakan metod GET
 - resepurl = url mengakses resep
 - hal = merupakan halaman
 - fetchHeader = berisi headet terdapat Token
@@ -18,7 +19,7 @@
 - Hasil Tampilan :
     <p align="center" style="display: inline;"><a href="/imgdemo/getall.jpeg" target="_blank"><img src="/imgdemo/getall.jpeg" width="600"></a></p>
 
-2. Membuat tampilan menambah Resep dan di kirim dengan metod POST
+3. Membuat tampilan menambah Resep dan di kirim dengan metod POST
 - data = berisi pengambilan value pada inputan
 - if = mengecek jika ada inputan kosong
 - Pada fetch membawa data yang sudah di baca dan di kirim melalui body dengan mengunakan metod POST
@@ -44,7 +45,10 @@
         .catch(err => console.log(err));
     }
 ```
-2. Membuat tampilan update dan meng update dengan metod PUT berdasarkan ID
+- Hasil Tampilan :
+    <p align="center" style="display: inline;"><a href="/imgdemo/postdata.jpeg" target="_blank"><img src="/imgdemo/postdata.jpeg" width="600"></a></p>
+
+3. Membuat tampilan Edit dan meng update dengan metod PUT berdasarkan ID
 - Pada if else mengecek gambar dengan url lama atau baru
 - Di kirim dengan Metod PUT
 ```
@@ -86,7 +90,10 @@
         .catch(err => console.log(err));
     }
 ```
-3. Pada tampilan update terdapat tombol Hapus Resep dengan metod DELETE dengan berdasarkan ID
+- Hasil Tampilan :
+    <p align="center" style="display: inline;"><a href="/imgdemo/edit.jpeg" target="_blank"><img src="/imgdemo/edit.jpeg" width="600"></a></p>
+
+4. Pada tampilan Detail terdapat tombol Hapus Resep dengan metod DELETE dengan berdasarkan ID
 - Menghapus dengan metod DELETE berdasarkan ID 
 ```
     fetch(resepurl,{
@@ -107,7 +114,10 @@
             })
         .catch(err => console.log(err));
 ```
-4. Membuat Detail Resep dengan metod GET dengan berdasarkan ID
+- Hasil Tampilan :
+    <!-- <p align="center" style="display: inline;"><a href="/imgdemo/edit.jpeg" target="_blank"><img src="/imgdemo/edit.jpeg" width="600"></a></p> -->
+
+5. Membuat Detail Resep dengan metod GET dengan berdasarkan ID
 - pemangilan seperti point 1 tetapi berdasarkan ID
 ```
     fetch(resepurl+'?id='+id, fetchHeader)
@@ -118,7 +128,10 @@
             console.error(err);
         })
 ```
-5. Membuat search berdasarkan asal kota masakan mengunakan metod GET
+- Hasil Tampilan :
+    <p align="center" style="display: inline;"><a href="/imgdemo/getdetail.jpeg" target="_blank"><img src="/imgdemo/getdetail.jpeg" width="600"></a></p>
+
+6. Membuat search berdasarkan asal kota masakan mengunakan metod GET
 - pemangilan seperti point 1 tetapi berdasarkan asal
 - search = adalah hasil inputan pada tag input
 ```
@@ -130,5 +143,7 @@
             console.error(err);
         })
 ```
+- Hasil Tampilan :
+    <p align="center" style="display: inline;"><a href="/imgdemo/getbykota.jpeg" target="_blank"><img src="/imgdemo/getbykota.jpeg" width="600"></a></p>
 
 ### Lebih detail bisa lihat pada Project
