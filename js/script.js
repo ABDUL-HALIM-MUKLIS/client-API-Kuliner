@@ -9,7 +9,7 @@ const fetchHeader = {
 };
 
 function getListResep(hal) {
-
+    
     document.getElementById('collapsible').style.display = "block";
     document.getElementById('pemanis').style.display = "block";
     title.innerHTML = `
@@ -100,6 +100,7 @@ function getListResep(hal) {
                     getasalResep(document.getElementById('search').value,hal);
                 }
             })
+
         }).catch(err => {
             console.error(err);
         })
@@ -129,27 +130,38 @@ function getasalResep(search,hal) {
             console.log(data);
 
             let reseps = "";
-            data.data.forEach(resep => {
+            if (data.msg == 'Data tidak ditemukan') {
+                console.log('Tidak ada asal');
                 reseps += `
-                    <div class="col s12 m4">
-                        <div class="card">
-                            <div class="card-image waves-effect waves-waves-light">
-                                <img class="activator" src="${resep.gambar}" alt="coba">
-                                <span class="card-title">${resep.nama_kuliner}</span>
-                            </div> 
-                            <div class="card-content">
-                                <div class="card-content">
-                                    <p>${resep.kategori} Khas ${resep.asal}</p>
+                    <div>
+                        <h5 class="center-align">Tidak ada Resep dari kota `+ search+`</h5>
+                    </div>
+                `
+
+            }else {
+                data.data.forEach(resep => {
+                    reseps += `
+                        <div class="col s12 m4">
+                            <div class="card">
+                                <div class="card-image waves-effect waves-waves-light">
+                                    <img class="activator" src="${resep.gambar}" alt="coba">
+                                    <span class="card-title">${resep.nama_kuliner}</span>
                                 </div> 
-                                <div class="card-action">
-                                    <a href="#id=${resep.id}" data-id="${resep.id}" class="detail waves-effect waves-light btn"> Lihat.. </a>
-                                    
+                                <div class="card-content">
+                                    <div class="card-content">
+                                        <p>${resep.kategori} Khas ${resep.asal}</p>
+                                    </div> 
+                                    <div class="card-action">
+                                        <a href="#id=${resep.id}" data-id="${resep.id}" class="detail waves-effect waves-light btn"> Lihat.. </a>
+                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `
-            });
+                    `
+                });
+            }
+
 
             // Content resep
             contents.innerHTML = `
@@ -204,6 +216,18 @@ function postResep(){
             alert(teks.msg);
             document.getElementById('colbody').style.display = "none";
             document.getElementById('colats').classList.remove('active');
+
+            // mengosongkan form
+            document.querySelector('#nama_kuliner').value = '';
+            document.querySelector('#asal').value = '';
+            document.querySelector('#kategori').value = '';
+            document.querySelector('#gambar').value = '';
+            document.querySelector('#durasi').value = '';
+            document.querySelector('#porsi').value = '';
+            document.querySelector('#bahan').value = '';
+            document.querySelector('#resep').value = '';
+
+            window.location.reload();
             
         })
         .catch(err => console.log(err));
@@ -219,6 +243,12 @@ function detailResep(id,hal){
         .then(res => res.json())
         .then(data => {
             console.log(data);
+            if (data.msg == 'Data tidak ditemukan') {
+                console.log('masuk detail resep atas');
+                getListResep(hal-1);
+                // window.location.reload();
+            }
+
             title.innerHTML = `<h1 class="center-align">${data.data[0].nama_kuliner}</h1>`;
                 contents.innerHTML = `
                         <div class="teal-text text-darken-3" style="display: flex;justify-content: center;align-items: center; margin-bottom:20px;">
@@ -269,6 +299,7 @@ function detailResep(id,hal){
                         getListResep(e.target.dataset.id);
                     }
                 })
+
         }).catch(err => {
             console.error(err);
         })
@@ -386,7 +417,10 @@ function putResep(putid,hal){
             }
         )
         .then(res => res.json())
-        .then(teks => alert(teks.msg))
+        .then(teks => {
+            alert(teks.msg);
+            detailResep(putid,hal);
+        })
         .catch(err => console.log(err));
     }else {
         console.log('gambar berbeda');
@@ -404,10 +438,12 @@ function putResep(putid,hal){
             }
         )
         .then(res => res.json())
-        .then(teks => alert(teks.msg))
+        .then(teks => {
+            alert(teks.msg);
+            detailResep(putid,hal);
+        })
         .catch(err => console.log(err));
     }
-    detailResep(putid,hal);
 }
 
 function deleteResep(idhapus,hal) {
@@ -426,8 +462,16 @@ function deleteResep(idhapus,hal) {
         .then(teks => {
                 alert(teks.msg);
                 getListResep(hal);
+                window.location.reload();
             })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+            if (err.msg == 'Data tidak ditemukan') {
+                console.log('masuk delet');
+                getListResep(hal-1);
+                window.location.reload();
+            }
+        });
 }
 
 
