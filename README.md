@@ -115,7 +115,7 @@
         .catch(err => console.log(err));
 ```
 - Hasil Tampilan :
-    <p align="center" style="display: inline;"><a href="/imgdemo/delete.PNG" target="_blank"><img src="/imgdemo/delete.PNG" width="600"></a></p>
+    <p align="center" style="display: inline;"><a href="/imgdemo/delete.jpeg" target="_blank"><img src="/imgdemo/delete.jpeg" width="600"></a></p>
 
 5. Membuat Detail Resep dengan metod GET dengan berdasarkan ID
 - pemangilan seperti point 1 tetapi berdasarkan ID
